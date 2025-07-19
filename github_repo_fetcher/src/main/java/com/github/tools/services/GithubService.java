@@ -38,7 +38,7 @@ public class GithubService {
 		return new HttpEntity<>(headers);
 	}
 	
-	public List<GithubRepository> fetchNonForkRepositories(String username) {
+	public List<GithubRepository> fetchNonForkRepositories(String username) throws HttpClientErrorException {
 		try {
 			ResponseEntity<GithubRepository[]> response = restTemplate.exchange(
 					Constants.GITHUB_REPO_BASE,
