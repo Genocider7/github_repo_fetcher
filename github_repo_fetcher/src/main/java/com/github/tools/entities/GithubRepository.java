@@ -44,8 +44,8 @@ public class GithubRepository {
 	
 	public Map<String, Object> toMap() {
 		return Map.of(
-				"Repository name", this.name,
-				"Owner login", this.owner.getLogin(),
+				"RepositoryName", this.name,
+				"OwnerLogin", this.owner.getLogin(),
 				"Branches", this.branches.stream().map(Branch::toMap).collect(Collectors.toList())
 			);
 	}

@@ -28,8 +28,8 @@ public class Branch {
 	
 	public Map<String, Object> toMap() {
 		return Map.of(
-				"Branch name", this.name,
-				"Last commit sha", this.commit.getSha()
+				"BranchName", this.name,
+				"LastCommitSha", this.commit.getSha()
 			);
 	}
 }
