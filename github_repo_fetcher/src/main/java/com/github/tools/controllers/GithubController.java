@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,19 +29,22 @@ public class GithubController {
 	}
 	
 	@GetMapping("/repos/{username}")
-	public Map<String, Object> getNonForkRepos(@PathVariable String username) {
+	public ResponseEntity<?> getNonForksRepos(@PathVariable String username) {
 		try {
 			List<GithubRepository> repos = githubService.fetchNonForkRepositories(username);
-			
-			return Map.of(
-					"status", 200,
-					"data", repos.stream().map(GithubRepository::toMap).collect(Collectors.toList()) 
-				);
-		} catch(UserNotFoundException e) {
-			return Map.of(
+			return ResponseEntity.ok(repos.stream().map(GithubRepository::toMap).collect(Collectors.toList()));
+		} catch (UserNotFoundException e) {
+			Map<String, Object> errorBody = Map.of(
 					"status", 404,
 					"message", e.getMessage()
 				);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorBody);
+		} catch (Exception e) {
+			Map<String, Object> errorBody = Map.of(
+					"status", 500,
+					"message", "Unexpected error occured"
+				);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody);
 		}
 	}
 }
