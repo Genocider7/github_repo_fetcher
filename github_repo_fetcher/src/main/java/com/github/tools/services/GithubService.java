@@ -19,6 +19,7 @@ import com.github.tools.entities.GithubRepository;
 import com.github.tools.exceptions.UserNotFoundException;
 import com.github.tools.utils.Constants;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -32,10 +33,17 @@ public class GithubService {
 	
 	private HttpEntity<Void> createAuthEntity() {
 		HttpHeaders headers = new HttpHeaders();
-		if (githubToken != null && githubToken.isBlank()) {
+		if (githubToken != null && !githubToken.isBlank()) {
 			headers.setBearerAuth(githubToken);
 		}
 		return new HttpEntity<>(headers);
+	}
+	
+	@PostConstruct
+	public void warnIfUnauthenticated() {
+		if (githubToken == null || githubToken.isBlank()) {
+			System.out.println("Warning: No GitHub token provided. Using unauthenticated connection with rate of 60/h.");
+		}
 	}
 	
 	public List<GithubRepository> fetchNonForkRepositories(String username) throws HttpClientErrorException {
